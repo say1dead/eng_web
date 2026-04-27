@@ -3,6 +3,7 @@ const state = {
   category: "",
   query: "",
   taxonomy: null,
+  allItems: [],
   items: []
 };
 
@@ -34,25 +35,31 @@ const elements = {
 init();
 
 async function init() {
-  state.taxonomy = await fetchJson("/api/taxonomy");
+  const [taxonomy, items] = await Promise.all([
+    fetchJson("/api/taxonomy"),
+    fetchJson("/api/items")
+  ]);
+
+  state.taxonomy = taxonomy;
+  state.allItems = items;
   renderFilters();
   bindEvents();
-  await loadItems();
+  loadItems();
 }
 
 function bindEvents() {
-  elements.search.addEventListener("input", debounce(async (event) => {
+  elements.search.addEventListener("input", debounce((event) => {
     state.query = event.target.value;
-    await loadItems();
+    loadItems();
   }, 180));
 
-  elements.reset.addEventListener("click", async () => {
+  elements.reset.addEventListener("click", () => {
     state.country = "";
     state.category = "";
     state.query = "";
     elements.search.value = "";
     renderFilters();
-    await loadItems();
+    loadItems();
   });
 
   elements.closeDialog.addEventListener("click", () => elements.dialog.close());
@@ -91,25 +98,33 @@ function renderSegment(container, options, stateKey) {
     button.type = "button";
     button.textContent = option.name;
     button.classList.toggle("active", state[stateKey] === option.code);
-    button.addEventListener("click", async () => {
+    button.addEventListener("click", () => {
       state[stateKey] = option.code;
       if (stateKey === "country") {
         state.category = "";
       }
       renderFilters();
-      await loadItems();
+      loadItems();
     });
     container.append(button);
   }
 }
 
-async function loadItems() {
-  const params = new URLSearchParams();
-  if (state.country) params.set("country", state.country);
-  if (state.category) params.set("category", state.category);
-  if (state.query) params.set("q", state.query);
+function loadItems() {
+  const search = state.query.trim().toLowerCase();
+  state.items = state.allItems.filter(item => {
+    const countryMatches = !state.country || String(item.countryCode) === state.country;
+    const categoryMatches = !state.category || item.categoryCode === state.category;
+    const searchMatches = !search || [
+      item.name,
+      item.country,
+      item.category,
+      item.description,
+      ...Object.values(item.specs || {})
+    ].some(value => String(value).toLowerCase().includes(search));
 
-  state.items = await fetchJson(`/api/items?${params}`);
+    return countryMatches && categoryMatches && searchMatches;
+  });
   renderItems();
 }
 
@@ -139,13 +154,14 @@ function renderItems() {
     const meta = node.querySelector(".card-meta");
     const title = node.querySelector("h2");
 
-    image.src = item.imageUrl;
     image.alt = item.name;
-    image.loading = "lazy";
-    image.addEventListener("error", () => {
-      image.remove();
-      imageWrap.classList.add("missing");
-    }, { once: true });
+    setImageSource(image, item.imageUrl, {
+      loading: "lazy",
+      onMissing: () => {
+        image.remove();
+        imageWrap.classList.add("missing");
+      }
+    });
 
     meta.textContent = `${item.country} · ${item.category} · ${getAdoptionYear(item)}`;
     title.textContent = item.name;
@@ -227,13 +243,14 @@ function createTimelineItem(item) {
   thumb.className = "timeline-thumb";
 
   const image = document.createElement("img");
-  image.src = item.imageUrl;
   image.alt = item.name;
-  image.loading = "lazy";
-  image.addEventListener("error", () => {
-    image.remove();
-    thumb.classList.add("missing");
-  }, { once: true });
+  setImageSource(image, item.imageUrl, {
+    loading: "eager",
+    onMissing: () => {
+      image.remove();
+      thumb.classList.add("missing");
+    }
+  });
   thumb.append(image);
 
   const name = document.createElement("span");
@@ -267,12 +284,14 @@ function createCarryoverNotice(item) {
 }
 
 function openItem(item) {
-  elements.dialogImage.src = item.imageUrl;
   elements.dialogImage.alt = item.name;
-  elements.dialogImage.onerror = () => {
-    elements.dialogImage.removeAttribute("src");
-    elements.dialogImage.alt = "Image not found";
-  };
+  setImageSource(elements.dialogImage, item.imageUrl, {
+    loading: "eager",
+    onMissing: () => {
+      elements.dialogImage.removeAttribute("src");
+      elements.dialogImage.alt = "Image not found";
+    }
+  });
   elements.dialogMeta.textContent = `${item.country} · ${item.category} · ${getAdoptionYear(item)}`;
   elements.dialogTitle.textContent = item.name;
   elements.dialogSpecs.replaceChildren();
@@ -295,6 +314,40 @@ async function fetchJson(url) {
     throw new Error(`Request failed: ${response.status}`);
   }
   return response.json();
+}
+
+function setImageSource(image, url, options = {}) {
+  const { loading, onMissing } = options;
+  let attempts = 0;
+
+  if (loading) {
+    image.loading = loading;
+  }
+
+  image.dataset.imageUrl = url;
+  image.onerror = () => {
+    if (image.dataset.imageUrl !== url) {
+      return;
+    }
+
+    attempts += 1;
+    if (attempts === 1) {
+      image.src = withRetryToken(url);
+      return;
+    }
+
+    image.onerror = null;
+    onMissing?.();
+  };
+  image.onload = () => {
+    image.onerror = null;
+  };
+  image.src = url;
+}
+
+function withRetryToken(url) {
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}retry=${Date.now()}`;
 }
 
 function getAdoptionYear(item) {

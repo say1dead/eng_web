@@ -194,7 +194,7 @@ function loadItems() {
       item.country,
       item.category,
       item.description,
-      ...Object.values(item.specs)
+      ...Object.values(item.specs || {})
     ].some(value => String(value).toLowerCase().includes(search));
 
     return countryMatches && categoryMatches && searchMatches;
@@ -228,13 +228,14 @@ function renderItems() {
     const meta = node.querySelector(".card-meta");
     const title = node.querySelector("h2");
 
-    image.src = item.imageUrl;
     image.alt = item.name;
-    image.loading = "lazy";
-    image.addEventListener("error", () => {
-      image.remove();
-      imageWrap.classList.add("missing");
-    }, { once: true });
+    setImageSource(image, item.imageUrl, {
+      loading: "lazy",
+      onMissing: () => {
+        image.remove();
+        imageWrap.classList.add("missing");
+      }
+    });
 
     meta.textContent = `${item.country} · ${item.category} · ${getAdoptionYear(item)}`;
     title.textContent = item.name;
@@ -316,13 +317,14 @@ function createTimelineItem(item) {
   thumb.className = "timeline-thumb";
 
   const image = document.createElement("img");
-  image.src = item.imageUrl;
   image.alt = item.name;
-  image.loading = "eager";
-  image.addEventListener("error", () => {
-    image.remove();
-    thumb.classList.add("missing");
-  }, { once: true });
+  setImageSource(image, item.imageUrl, {
+    loading: "eager",
+    onMissing: () => {
+      image.remove();
+      thumb.classList.add("missing");
+    }
+  });
   thumb.append(image);
 
   const name = document.createElement("span");
@@ -356,12 +358,14 @@ function createCarryoverNotice(item) {
 }
 
 function openItem(item) {
-  elements.dialogImage.src = item.imageUrl;
   elements.dialogImage.alt = item.name;
-  elements.dialogImage.onerror = () => {
-    elements.dialogImage.removeAttribute("src");
-    elements.dialogImage.alt = "Image not found";
-  };
+  setImageSource(elements.dialogImage, item.imageUrl, {
+    loading: "eager",
+    onMissing: () => {
+      elements.dialogImage.removeAttribute("src");
+      elements.dialogImage.alt = "Image not found";
+    }
+  });
   elements.dialogMeta.textContent = `${item.country} · ${item.category} · ${getAdoptionYear(item)}`;
   elements.dialogTitle.textContent = item.name;
   elements.dialogSpecs.replaceChildren();
@@ -384,6 +388,40 @@ async function fetchJson(url) {
     throw new Error(`Request failed: ${response.status}`);
   }
   return response.json();
+}
+
+function setImageSource(image, url, options = {}) {
+  const { loading, onMissing } = options;
+  let attempts = 0;
+
+  if (loading) {
+    image.loading = loading;
+  }
+
+  image.dataset.imageUrl = url;
+  image.onerror = () => {
+    if (image.dataset.imageUrl !== url) {
+      return;
+    }
+
+    attempts += 1;
+    if (attempts === 1) {
+      image.src = withRetryToken(url);
+      return;
+    }
+
+    image.onerror = null;
+    onMissing?.();
+  };
+  image.onload = () => {
+    image.onerror = null;
+  };
+  image.src = url;
+}
+
+function withRetryToken(url) {
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}retry=${Date.now()}`;
 }
 
 function getAdoptionYear(item) {

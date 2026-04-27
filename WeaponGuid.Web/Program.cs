@@ -46,7 +46,11 @@ if (!string.IsNullOrWhiteSpace(localImagesPath))
         app.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new PhysicalFileProvider(absoluteImagesPath),
-            RequestPath = "/images"
+            RequestPath = "/images",
+            OnPrepareResponse = context =>
+            {
+                context.Context.Response.Headers.CacheControl = "public,max-age=604800,immutable";
+            }
         });
     }
 }
