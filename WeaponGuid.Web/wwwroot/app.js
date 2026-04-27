@@ -1,10 +1,130 @@
-const state = {
-  country: "",
-  category: "",
-  query: "",
-  taxonomy: null,
-  allItems: [],
-  items: []
+const taxonomyByLanguage = {
+  en: {
+    countries: [
+      { code: 1, name: "Soviet Union" },
+      { code: 2, name: "Germany" },
+      { code: 3, name: "United States" },
+      { code: 4, name: "United Kingdom" }
+    ],
+    categories: [
+      { code: "1", name: "Automatic Weapons", kind: "weapon" },
+      { code: "2", name: "Rifles", kind: "weapon" },
+      { code: "3", name: "Machine Guns", kind: "weapon" },
+      { code: "4", name: "Tanks", kind: "vehicle" },
+      { code: "5", name: "Aircraft", kind: "aircraft" },
+      { code: "6", name: "Anti-Aircraft", kind: "vehicle" }
+    ]
+  },
+  ru: {
+    countries: [
+      { code: 1, name: "СССР" },
+      { code: 2, name: "Германия" },
+      { code: 3, name: "США" },
+      { code: 4, name: "Великобритания" }
+    ],
+    categories: [
+      { code: "1", name: "Автоматическое оружие", kind: "weapon" },
+      { code: "2", name: "Винтовки", kind: "weapon" },
+      { code: "3", name: "Пулеметы", kind: "weapon" },
+      { code: "4", name: "Танки", kind: "vehicle" },
+      { code: "5", name: "Самолеты", kind: "aircraft" },
+      { code: "6", name: "Зенитные установки", kind: "vehicle" }
+    ]
+  }
+};
+
+const specLabelsByLanguage = {
+  en: {
+    year: "Year adopted",
+    caliber: "Caliber",
+    fire_modes: "Fire modes",
+    rate_of_fire: "Rate of fire",
+    range: "Range / takeoff",
+    weight: "Weight",
+    armor: "Armor",
+    max_spead: "Speed",
+    guns_and_spead: "Armament",
+    max_stats: "Flight performance",
+    weapons: "Armament"
+  },
+  ru: {
+    year: "Год принятия",
+    caliber: "Калибр",
+    fire_modes: "Режимы стрельбы",
+    rate_of_fire: "Скорострельность",
+    range: "Дальность / взлет",
+    weight: "Масса",
+    armor: "Броня",
+    max_spead: "Скорость",
+    guns_and_spead: "Вооружение",
+    max_stats: "Летные характеристики",
+    weapons: "Вооружение"
+  }
+};
+
+const uiByLanguage = {
+  en: {
+    htmlLang: "en",
+    documentTitle: "Weapons Guid",
+    eyebrow: "20th century",
+    heroTitle: "Weapons Reference",
+    searchLabel: "Search",
+    searchPlaceholder: "Name, country, description",
+    countryTitle: "Country",
+    categoryTitle: "Category",
+    itemCountLabel: "items in the catalog",
+    resetFilters: "Reset filters",
+    creatorsButton: "Creators",
+    creatorsEyebrow: "Information",
+    creatorsTitle: "Info",
+    creatorLines: [
+      "<strong>Kochurov Sergey</strong> - backend.",
+      "<strong>Suslin Akim</strong> - test + data collect.",
+      "<strong>Kuznetcov Kirill</strong> - team lead.",
+      "<strong>Bodorin Gregory</strong> - frontend."
+    ],
+    creatorsNote: "Data was collected from open sources.",
+    all: "All",
+    emptyState: "No items match these filters.",
+    noImage: "No image",
+    noChange: "No change",
+    noDescription: "No description has been added yet.",
+    imageNotFound: "Image not found",
+    timelineCategory: "Category",
+    yearUnknown: "Year unknown",
+    closeLabel: "Close"
+  },
+  ru: {
+    htmlLang: "ru",
+    documentTitle: "Справочник вооружения",
+    eyebrow: "20 век",
+    heroTitle: "Справочник вооружения",
+    searchLabel: "Поиск",
+    searchPlaceholder: "Название, страна, описание",
+    countryTitle: "Страна",
+    categoryTitle: "Категория",
+    itemCountLabel: "объектов в каталоге",
+    resetFilters: "Сбросить фильтры",
+    creatorsButton: "Авторы",
+    creatorsEyebrow: "Информация",
+    creatorsTitle: "Команда",
+    creatorLines: [
+      "<strong>Kochurov Sergey</strong> - backend.",
+      "<strong>Suslin Akim</strong> - тесты и сбор данных.",
+      "<strong>Kuznetcov Kirill</strong> - team lead.",
+      "<strong>Bodorin Gregory</strong> - frontend."
+    ],
+    creatorsNote: "Данные собраны из открытых источников.",
+    all: "Все",
+    emptyState: "По этим фильтрам ничего не найдено.",
+    noImage: "Нет изображения",
+    noChange: "Без изменений",
+    noDescription: "Описание пока не добавлено.",
+    imageNotFound: "Изображение не найдено",
+    timelineCategory: "Категория",
+    yearUnknown: "Год не указан",
+    closeLabel: "Закрыть"
+  }
 };
 
 const decades = Array.from({ length: 10 }, (_, index) => {
@@ -12,13 +132,33 @@ const decades = Array.from({ length: 10 }, (_, index) => {
   return { start, end: start + 10, label: `${start}-${start + 10}` };
 });
 
+const assetBaseUrl = new URL(".", document.currentScript?.src || window.location.href);
+
+const state = {
+  language: getInitialLanguage(),
+  country: "",
+  category: "",
+  query: "",
+  catalogs: {},
+  items: [],
+  selectedItemId: ""
+};
+
 const elements = {
+  languageSwitch: document.querySelector("#languageSwitch"),
+  creatorsButton: document.querySelector("#creatorsButton"),
+  heroEyebrow: document.querySelector("#heroEyebrow"),
+  heroTitle: document.querySelector("#heroTitle"),
+  searchLabel: document.querySelector("#searchLabel"),
+  search: document.querySelector("#searchInput"),
+  countryTitle: document.querySelector("#countryTitle"),
+  categoryTitle: document.querySelector("#categoryTitle"),
   countries: document.querySelector("#countryFilters"),
   categories: document.querySelector("#categoryFilters"),
-  search: document.querySelector("#searchInput"),
-  grid: document.querySelector("#catalogGrid"),
   count: document.querySelector("#itemCount"),
+  countLabel: document.querySelector("#itemCountLabel"),
   reset: document.querySelector("#resetFilters"),
+  grid: document.querySelector("#catalogGrid"),
   template: document.querySelector("#cardTemplate"),
   dialog: document.querySelector("#itemDialog"),
   closeDialog: document.querySelector("#closeDialog"),
@@ -27,23 +167,24 @@ const elements = {
   dialogTitle: document.querySelector("#dialogTitle"),
   dialogSpecs: document.querySelector("#dialogSpecs"),
   dialogDescription: document.querySelector("#dialogDescription"),
-  creatorsButton: document.querySelector("#creatorsButton"),
   creatorsDialog: document.querySelector("#creatorsDialog"),
-  closeCreatorsDialog: document.querySelector("#closeCreatorsDialog")
+  closeCreatorsDialog: document.querySelector("#closeCreatorsDialog"),
+  creatorsEyebrow: document.querySelector("#creatorsEyebrow"),
+  creatorsTitle: document.querySelector("#creatorsTitle"),
+  creatorLine1: document.querySelector("#creatorLine1"),
+  creatorLine2: document.querySelector("#creatorLine2"),
+  creatorLine3: document.querySelector("#creatorLine3"),
+  creatorLine4: document.querySelector("#creatorLine4"),
+  creatorsNote: document.querySelector("#creatorsNote")
 };
 
 init();
 
 async function init() {
-  const [taxonomy, items] = await Promise.all([
-    fetchJson("/api/taxonomy"),
-    fetchJson("/api/items")
-  ]);
-
-  state.taxonomy = taxonomy;
-  state.allItems = items;
-  renderFilters();
   bindEvents();
+  renderLanguageSwitch();
+  await ensureCatalogLoaded(state.language);
+  applyLocale();
   loadItems();
 }
 
@@ -78,15 +219,96 @@ function bindEvents() {
   });
 }
 
+async function setLanguage(language) {
+  if (language === state.language) {
+    return;
+  }
+
+  state.language = language;
+  window.localStorage.setItem("weapon-guid-language", language);
+  renderLanguageSwitch();
+  applyLocale();
+  await ensureCatalogLoaded(language);
+  loadItems();
+}
+
+function renderLanguageSwitch() {
+  const buttons = elements.languageSwitch.querySelectorAll("button[data-language]");
+  for (const button of buttons) {
+    const language = button.dataset.language;
+    button.classList.toggle("active", state.language === language);
+    if (button.dataset.bound === "true") {
+      continue;
+    }
+
+    button.dataset.bound = "true";
+    button.addEventListener("click", () => {
+      void setLanguage(language);
+    });
+  }
+}
+
+async function ensureCatalogLoaded(language) {
+  if (state.catalogs[language]) {
+    return state.catalogs[language];
+  }
+
+  const [weapons, vehicles, aircraft] = await Promise.all([
+    fetchJson(assetUrl(`data/${language}/weapons.json`)),
+    fetchJson(assetUrl(`data/${language}/wheel_auto.json`)),
+    fetchJson(assetUrl(`data/${language}/fly_auto.json`))
+  ]);
+
+  const items = [...weapons, ...vehicles, ...aircraft]
+    .map(raw => normalizeItem(raw, language))
+    .sort((left, right) =>
+      left.countryCode - right.countryCode ||
+      left.categoryCode.localeCompare(right.categoryCode) ||
+      left.position - right.position
+    );
+
+  state.catalogs[language] = items;
+  return items;
+}
+
+function applyLocale() {
+  const ui = getUi();
+
+  document.documentElement.lang = ui.htmlLang;
+  document.title = ui.documentTitle;
+  elements.heroEyebrow.textContent = ui.eyebrow;
+  elements.heroTitle.textContent = ui.heroTitle;
+  elements.searchLabel.textContent = ui.searchLabel;
+  elements.search.placeholder = ui.searchPlaceholder;
+  elements.countryTitle.textContent = ui.countryTitle;
+  elements.categoryTitle.textContent = ui.categoryTitle;
+  elements.countLabel.textContent = ui.itemCountLabel;
+  elements.reset.textContent = ui.resetFilters;
+  elements.creatorsButton.textContent = ui.creatorsButton;
+  elements.creatorsEyebrow.textContent = ui.creatorsEyebrow;
+  elements.creatorsTitle.textContent = ui.creatorsTitle;
+  elements.creatorLine1.innerHTML = ui.creatorLines[0];
+  elements.creatorLine2.innerHTML = ui.creatorLines[1];
+  elements.creatorLine3.innerHTML = ui.creatorLines[2];
+  elements.creatorLine4.innerHTML = ui.creatorLines[3];
+  elements.creatorsNote.textContent = ui.creatorsNote;
+  elements.closeDialog.setAttribute("aria-label", ui.closeLabel);
+  elements.closeCreatorsDialog.setAttribute("aria-label", ui.closeLabel);
+  renderFilters();
+}
+
 function renderFilters() {
+  const taxonomy = getTaxonomy();
+  const ui = getUi();
+
   renderSegment(elements.countries, [
-    { code: "", name: "All" },
-    ...state.taxonomy.countries.map(country => ({ code: String(country.code), name: country.name }))
+    { code: "", name: ui.all },
+    ...taxonomy.countries.map(country => ({ code: String(country.code), name: country.name }))
   ], "country");
 
   renderSegment(elements.categories, [
-    { code: "", name: "All" },
-    ...state.taxonomy.categories
+    { code: "", name: ui.all },
+    ...taxonomy.categories
   ], "category");
 }
 
@@ -112,7 +334,9 @@ function renderSegment(container, options, stateKey) {
 
 function loadItems() {
   const search = state.query.trim().toLowerCase();
-  state.items = state.allItems.filter(item => {
+  const items = state.catalogs[state.language] || [];
+
+  state.items = items.filter(item => {
     const countryMatches = !state.country || String(item.countryCode) === state.country;
     const categoryMatches = !state.category || item.categoryCode === state.category;
     const searchMatches = !search || [
@@ -125,10 +349,19 @@ function loadItems() {
 
     return countryMatches && categoryMatches && searchMatches;
   });
+
   renderItems();
+
+  if (elements.dialog.open && state.selectedItemId) {
+    const activeItem = items.find(item => item.id === state.selectedItemId);
+    if (activeItem) {
+      openItem(activeItem);
+    }
+  }
 }
 
 function renderItems() {
+  const ui = getUi();
   elements.count.textContent = state.items.length;
   elements.grid.replaceChildren();
   elements.grid.classList.toggle("timeline-mode", Boolean(state.country));
@@ -136,7 +369,7 @@ function renderItems() {
   if (state.items.length === 0) {
     const empty = document.createElement("div");
     empty.className = "empty-state";
-    empty.textContent = "No items match these filters.";
+    empty.textContent = ui.emptyState;
     elements.grid.append(empty);
     return;
   }
@@ -159,11 +392,12 @@ function renderItems() {
       loading: "lazy",
       onMissing: () => {
         image.remove();
+        imageWrap.dataset.emptyLabel = ui.noImage;
         imageWrap.classList.add("missing");
       }
     });
 
-    meta.textContent = `${item.country} · ${item.category} · ${getAdoptionYear(item)}`;
+    meta.textContent = formatMeta(item);
     title.textContent = item.name;
     button.addEventListener("click", () => openItem(item));
     elements.grid.append(node);
@@ -171,6 +405,8 @@ function renderItems() {
 }
 
 function renderTimeline() {
+  const ui = getUi();
+  const taxonomy = getTaxonomy();
   const tableWrap = document.createElement("div");
   tableWrap.className = "timeline-wrap";
 
@@ -179,18 +415,18 @@ function renderTimeline() {
 
   const thead = document.createElement("thead");
   const headRow = document.createElement("tr");
-  headRow.append(createCell("th", "Category"));
+  headRow.append(createCell("th", ui.timelineCategory));
   for (const decade of decades) {
     headRow.append(createCell("th", decade.label));
   }
   thead.append(headRow);
 
   const tbody = document.createElement("tbody");
-  const categories = state.taxonomy.categories.filter(category =>
+  const visibleCategories = taxonomy.categories.filter(category =>
     !state.category || category.code === state.category
   );
 
-  for (const category of categories) {
+  for (const category of visibleCategories) {
     const row = document.createElement("tr");
     row.append(createCell("th", category.name));
     let lastKnownItem = null;
@@ -234,6 +470,7 @@ function createCell(tagName, text) {
 }
 
 function createTimelineItem(item) {
+  const ui = getUi();
   const button = document.createElement("button");
   button.type = "button";
   button.className = "timeline-item";
@@ -248,6 +485,7 @@ function createTimelineItem(item) {
     loading: "eager",
     onMissing: () => {
       image.remove();
+      thumb.dataset.emptyLabel = ui.noImage;
       thumb.classList.add("missing");
     }
   });
@@ -267,6 +505,7 @@ function createTimelineItem(item) {
 }
 
 function createCarryoverNotice(item) {
+  const ui = getUi();
   const button = document.createElement("button");
   button.type = "button";
   button.className = "timeline-carryover";
@@ -274,7 +513,7 @@ function createCarryoverNotice(item) {
   button.addEventListener("click", () => openItem(item));
 
   const label = document.createElement("span");
-  label.textContent = "No change";
+  label.textContent = ui.noChange;
 
   const name = document.createElement("strong");
   name.textContent = item.name;
@@ -284,19 +523,21 @@ function createCarryoverNotice(item) {
 }
 
 function openItem(item) {
+  const ui = getUi();
+  state.selectedItemId = item.id;
   elements.dialogImage.alt = item.name;
   setImageSource(elements.dialogImage, item.imageUrl, {
     loading: "eager",
     onMissing: () => {
       elements.dialogImage.removeAttribute("src");
-      elements.dialogImage.alt = "Image not found";
+      elements.dialogImage.alt = ui.imageNotFound;
     }
   });
-  elements.dialogMeta.textContent = `${item.country} · ${item.category} · ${getAdoptionYear(item)}`;
+  elements.dialogMeta.textContent = formatMeta(item);
   elements.dialogTitle.textContent = item.name;
   elements.dialogSpecs.replaceChildren();
 
-  for (const [label, value] of Object.entries(item.specs)) {
+  for (const [label, value] of Object.entries(item.specs || {})) {
     const dt = document.createElement("dt");
     const dd = document.createElement("dd");
     dt.textContent = label;
@@ -304,8 +545,46 @@ function openItem(item) {
     elements.dialogSpecs.append(dt, dd);
   }
 
-  elements.dialogDescription.textContent = item.description || "No description has been added yet.";
-  elements.dialog.showModal();
+  elements.dialogDescription.textContent = item.description || ui.noDescription;
+  if (!elements.dialog.open) {
+    elements.dialog.showModal();
+  }
+}
+
+function normalizeItem(raw, language) {
+  const id = String(raw.id);
+  const countryCode = Number(id.slice(0, 1));
+  const categoryCode = id.slice(1, 2);
+  const taxonomy = taxonomyByLanguage[language];
+  const category = taxonomy.categories.find(item => item.code === categoryCode) || {
+    code: categoryCode,
+    name: `Category ${categoryCode}`,
+    kind: "weapon"
+  };
+  const country = taxonomy.countries.find(item => item.code === countryCode)?.name || `Country ${countryCode}`;
+  const specs = {};
+  const specLabels = specLabelsByLanguage[language];
+
+  for (const [key, value] of Object.entries(raw)) {
+    if (["id", "name", "country", "description"].includes(key) || !value) {
+      continue;
+    }
+    specs[specLabels[key] || key] = String(value);
+  }
+
+  return {
+    id,
+    name: String(raw.name || id),
+    country,
+    countryCode,
+    categoryCode,
+    category: category.name,
+    position: Number(id.slice(2)) || 0,
+    kind: category.kind,
+    imageUrl: assetUrl(`images/${id}.jpg`),
+    specs,
+    description: String(raw.description || "")
+  };
 }
 
 async function fetchJson(url) {
@@ -350,10 +629,29 @@ function withRetryToken(url) {
   return `${url}${separator}retry=${Date.now()}`;
 }
 
+function assetUrl(path) {
+  return new URL(path, assetBaseUrl).toString();
+}
+
+function formatMeta(item) {
+  return `${item.country} | ${item.category} | ${getAdoptionYear(item)}`;
+}
+
 function getAdoptionYear(item) {
-  const yearText = item.specs?.["Year adopted"] || "";
-  const match = yearText.match(/\b(18|19|20)\d{2}\b/);
-  return match ? match[0] : "Year unknown";
+  const yearLabels = [
+    specLabelsByLanguage.en.year,
+    specLabelsByLanguage.ru.year
+  ];
+
+  for (const label of yearLabels) {
+    const yearText = item.specs?.[label] || "";
+    const match = yearText.match(/\b(18|19|20)\d{2}\b/);
+    if (match) {
+      return match[0];
+    }
+  }
+
+  return getUi().yearUnknown;
 }
 
 function getAdoptionYearNumber(item) {
@@ -370,6 +668,23 @@ function getDecade(item) {
     return 1990;
   }
   return Math.floor(year / 10) * 10;
+}
+
+function getInitialLanguage() {
+  const savedLanguage = window.localStorage.getItem("weapon-guid-language");
+  if (savedLanguage === "en" || savedLanguage === "ru") {
+    return savedLanguage;
+  }
+
+  return navigator.language.toLowerCase().startsWith("ru") ? "ru" : "en";
+}
+
+function getTaxonomy() {
+  return taxonomyByLanguage[state.language];
+}
+
+function getUi() {
+  return uiByLanguage[state.language];
 }
 
 function debounce(fn, delay) {

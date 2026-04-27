@@ -4,19 +4,23 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weapons Guid</title>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="styles.css?v=lang-20260427">
 </head>
 <body>
   <header class="app-header">
     <div class="header-info">
+      <div id="languageSwitch" class="segmented language-switch" aria-label="Language">
+        <button type="button" data-language="en">EN</button>
+        <button type="button" data-language="ru">RU</button>
+      </div>
       <button id="creatorsButton" class="info-button" type="button">Creators</button>
     </div>
     <div class="header-title">
-      <p class="eyebrow">20th century</p>
-      <h1>Weapons Reference</h1>
+      <p id="heroEyebrow" class="eyebrow">20th century</p>
+      <h1 id="heroTitle">Weapons Reference</h1>
     </div>
     <label class="search">
-      <span>Search</span>
+      <span id="searchLabel">Search</span>
       <input id="searchInput" type="search" placeholder="Name, country, description">
     </label>
   </header>
@@ -24,11 +28,11 @@
   <main>
     <section class="toolbar" aria-label="Filters">
       <div>
-        <p class="filter-title">Country</p>
+        <p id="countryTitle" class="filter-title">Country</p>
         <div id="countryFilters" class="segmented"></div>
       </div>
       <div>
-        <p class="filter-title">Category</p>
+        <p id="categoryTitle" class="filter-title">Category</p>
         <div id="categoryFilters" class="segmented"></div>
       </div>
     </section>
@@ -36,7 +40,7 @@
     <section class="summary">
       <div>
         <strong id="itemCount">0</strong>
-        <span>items in the catalog</span>
+        <span id="itemCountLabel">items in the catalog</span>
       </div>
       <button id="resetFilters" type="button">Reset filters</button>
     </section>
@@ -45,7 +49,7 @@
   </main>
 
   <dialog id="itemDialog" class="item-dialog">
-    <button id="closeDialog" class="close-button" type="button" aria-label="Close">×</button>
+    <button id="closeDialog" class="close-button" type="button" aria-label="Close">x</button>
     <div class="dialog-layout">
       <img id="dialogImage" alt="">
       <div class="dialog-content">
@@ -58,15 +62,15 @@
   </dialog>
 
   <dialog id="creatorsDialog" class="info-dialog">
-    <button id="closeCreatorsDialog" class="close-button" type="button" aria-label="Close">×</button>
+    <button id="closeCreatorsDialog" class="close-button" type="button" aria-label="Close">x</button>
     <div class="info-dialog-content">
-      <p class="eyebrow">Information</p>
-      <h2>Info</h2>
-      <p><strong>Kochurov Sergey</strong> - backend.</p>
-      <p><strong>Suslin Akim</strong> - test + data collect.</p>
-      <p><strong>Kuznetcov Kirill</strong> - team lead.</p>
-      <p><strong>Bodorin Gregory</strong> - frontend.</p>
-      <p class="info-note">Data was collected from open source.</p>
+      <p id="creatorsEyebrow" class="eyebrow">Information</p>
+      <h2 id="creatorsTitle">Info</h2>
+      <p id="creatorLine1"><strong>Kochurov Sergey</strong> - backend.</p>
+      <p id="creatorLine2"><strong>Suslin Akim</strong> - test + data collect.</p>
+      <p id="creatorLine3"><strong>Kuznetcov Kirill</strong> - team lead.</p>
+      <p id="creatorLine4"><strong>Bodorin Gregory</strong> - frontend.</p>
+      <p id="creatorsNote" class="info-note">Data was collected from open source.</p>
     </div>
   </dialog>
 
@@ -84,6 +88,6 @@
     </article>
   </template>
 
-  <script src="/app.js" defer></script>
+  <script src="app.js?v=lang-20260427" defer></script>
 </body>
 </html>

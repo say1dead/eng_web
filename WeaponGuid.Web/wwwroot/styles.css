@@ -49,7 +49,13 @@ input {
 
 .header-info {
   display: flex;
+  flex-wrap: wrap;
   align-items: end;
+  gap: 8px;
+}
+
+.language-switch button {
+  min-width: 52px;
 }
 
 .info-button {
@@ -282,7 +288,7 @@ main {
 }
 
 .timeline-thumb.missing::after {
-  content: "No image";
+  content: attr(data-empty-label);
   position: absolute;
   inset: 0;
   display: grid;
@@ -374,7 +380,7 @@ main {
 }
 
 .image-wrap.missing::after {
-  content: "No image";
+  content: attr(data-empty-label);
   position: absolute;
   inset: 0;
   display: grid;
@@ -398,8 +404,8 @@ main {
 }
 
 .item-dialog {
-  width: min(980px, calc(100vw - 28px));
-  max-height: calc(100vh - 28px);
+  width: min(966px, calc(100vw - 18px));
+  max-height: calc(100vh - 18px);
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 0;
@@ -443,34 +449,35 @@ main {
 
 .dialog-layout {
   display: grid;
-  grid-template-columns: minmax(420px, 58%) minmax(0, 1fr);
+  grid-template-columns: minmax(390px, 46%) minmax(430px, 1fr);
+  min-height: min(552px, calc(100vh - 18px));
 }
 
 .dialog-layout img {
   width: 100%;
   height: 100%;
-  min-height: 420px;
+  min-height: min(552px, calc(100vh - 18px));
   object-fit: contain;
   background: #111315;
 }
 
 .dialog-content {
   overflow: auto;
-  max-height: calc(100vh - 28px);
-  padding: 28px;
+  max-height: calc(100vh - 18px);
+  padding: 29px;
 }
 
 .dialog-content h2 {
   margin: 0 0 18px;
-  font-size: 34px;
+  font-size: 41px;
   line-height: 1.05;
 }
 
 .dialog-content dl {
   display: grid;
-  grid-template-columns: minmax(120px, 180px) minmax(0, 1fr);
-  gap: 10px 14px;
-  margin: 0 0 20px;
+  grid-template-columns: minmax(128px, 188px) minmax(0, 1fr);
+  gap: 12px 17px;
+  margin: 0 0 24px;
 }
 
 .dialog-content dt {
@@ -481,6 +488,12 @@ main {
 .dialog-content dd {
   margin: 0;
   white-space: pre-line;
+}
+
+.dialog-content dt,
+.dialog-content dd,
+#dialogDescription {
+  font-size: 19px;
 }
 
 #dialogDescription {
@@ -551,11 +564,12 @@ main {
 
   .dialog-layout {
     grid-template-columns: 1fr;
+    min-height: auto;
   }
 
   .dialog-layout img {
-    min-height: 240px;
-    max-height: 42vh;
+    min-height: 300px;
+    max-height: 48vh;
   }
 
   .dialog-content dl {
