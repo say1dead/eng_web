@@ -15,6 +15,7 @@ ENV ASPNETCORE_URLS=http://+:10000
 EXPOSE 10000
 
 COPY --from=build /app/publish ./
+COPY WeaponGuid.Web/wwwroot ./wwwroot/
 COPY data/ /data/
 
 ENTRYPOINT ["dotnet", "WeaponGuid.Web.dll"]
