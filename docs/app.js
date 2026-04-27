@@ -318,7 +318,7 @@ function createTimelineItem(item) {
   const image = document.createElement("img");
   image.src = item.imageUrl;
   image.alt = item.name;
-  image.loading = "lazy";
+  image.loading = "eager";
   image.addEventListener("error", () => {
     image.remove();
     thumb.classList.add("missing");
