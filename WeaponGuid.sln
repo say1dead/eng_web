@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeaponGuid.Web", "WeaponGuid.Web\WeaponGuid.Web.csproj", "{774BD526-385E-93F2-9041-B146C73A2682}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{774BD526-385E-93F2-9041-B146C73A2682}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{774BD526-385E-93F2-9041-B146C73A2682}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{774BD526-385E-93F2-9041-B146C73A2682}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{774BD526-385E-93F2-9041-B146C73A2682}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6FD91FC2-75EA-4267-9DDE-26DB3B432866}
+	EndGlobalSection
+EndGlobal

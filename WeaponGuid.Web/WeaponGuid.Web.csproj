@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Npgsql" Version="10.0.2" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\fly_auto.json" Link="Data\fly_auto.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\weapons.json" Link="Data\weapons.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\wheel_auto.json" Link="Data\wheel_auto.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
