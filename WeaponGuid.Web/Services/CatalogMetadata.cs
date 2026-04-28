@@ -42,6 +42,4 @@ public static class CatalogMetadata
 
     public static CategoryDto GetCategory(string code) =>
         Categories.FirstOrDefault(category => category.Code == code) ?? new(code, $"Category {code}", "weapon");
-
-    public static string GetKind(string categoryCode) => GetCategory(categoryCode).Kind;
 }

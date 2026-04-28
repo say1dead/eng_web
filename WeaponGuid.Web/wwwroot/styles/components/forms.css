@@ -1,0 +1,23 @@
+.search {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.search input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  padding: 12px 14px;
+  outline: none;
+}
+
+.search input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}

@@ -11,33 +11,9 @@ public sealed class PostgresCatalogStore(NpgsqlDataSource dataSource, JsonCatalo
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
         await using var connection = await dataSource.OpenConnectionAsync(cancellationToken);
-        await using (var schema = connection.CreateCommand())
-        {
-            schema.CommandText = """
-                create table if not exists catalog_items (
-                    id text primary key,
-                    name text not null,
-                    country text not null,
-                    country_code int not null,
-                    category_code text not null,
-                    category text not null,
-                    position int not null,
-                    kind text not null,
-                    image_url text not null,
-                    specs jsonb not null,
-                    description text not null
-                );
+        await EnsureSchemaAsync(connection, cancellationToken);
 
-                create index if not exists ix_catalog_country_category
-                    on catalog_items (country_code, category_code, position);
-                """;
-            await schema.ExecuteNonQueryAsync(cancellationToken);
-        }
-
-        await using var countCommand = connection.CreateCommand();
-        countCommand.CommandText = "select count(*) from catalog_items;";
-        var count = (long)(await countCommand.ExecuteScalarAsync(cancellationToken) ?? 0L);
-        if (count > 0)
+        if (await HasRowsAsync(connection, cancellationToken))
         {
             return;
         }
@@ -45,26 +21,7 @@ public sealed class PostgresCatalogStore(NpgsqlDataSource dataSource, JsonCatalo
         var items = await source.LoadAsync(cancellationToken);
         foreach (var item in items)
         {
-            await using var insert = connection.CreateCommand();
-            insert.CommandText = """
-                insert into catalog_items
-                (id, name, country, country_code, category_code, category, position, kind, image_url, specs, description)
-                values
-                (@id, @name, @country, @country_code, @category_code, @category, @position, @kind, @image_url, cast(@specs as jsonb), @description)
-                on conflict (id) do nothing;
-                """;
-            insert.Parameters.AddWithValue("id", item.Id);
-            insert.Parameters.AddWithValue("name", item.Name);
-            insert.Parameters.AddWithValue("country", item.Country);
-            insert.Parameters.AddWithValue("country_code", item.CountryCode);
-            insert.Parameters.AddWithValue("category_code", item.CategoryCode);
-            insert.Parameters.AddWithValue("category", item.Category);
-            insert.Parameters.AddWithValue("position", item.Position);
-            insert.Parameters.AddWithValue("kind", item.Kind);
-            insert.Parameters.AddWithValue("image_url", item.ImageUrl);
-            insert.Parameters.AddWithValue("specs", JsonSerializer.Serialize(item.Specs, JsonOptions));
-            insert.Parameters.AddWithValue("description", item.Description);
-            await insert.ExecuteNonQueryAsync(cancellationToken);
+            await InsertAsync(connection, item, cancellationToken);
         }
     }
 
@@ -122,6 +79,62 @@ public sealed class PostgresCatalogStore(NpgsqlDataSource dataSource, JsonCatalo
 
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
         return await reader.ReadAsync(cancellationToken) ? ReadItem(reader) : null;
+    }
+
+    private static async Task EnsureSchemaAsync(NpgsqlConnection connection, CancellationToken cancellationToken)
+    {
+        await using var schema = connection.CreateCommand();
+        schema.CommandText = """
+            create table if not exists catalog_items (
+                id text primary key,
+                name text not null,
+                country text not null,
+                country_code int not null,
+                category_code text not null,
+                category text not null,
+                position int not null,
+                kind text not null,
+                image_url text not null,
+                specs jsonb not null,
+                description text not null
+            );
+
+            create index if not exists ix_catalog_country_category
+                on catalog_items (country_code, category_code, position);
+            """;
+        await schema.ExecuteNonQueryAsync(cancellationToken);
+    }
+
+    private static async Task<bool> HasRowsAsync(NpgsqlConnection connection, CancellationToken cancellationToken)
+    {
+        await using var countCommand = connection.CreateCommand();
+        countCommand.CommandText = "select count(*) from catalog_items;";
+        var count = (long)(await countCommand.ExecuteScalarAsync(cancellationToken) ?? 0L);
+        return count > 0;
+    }
+
+    private static async Task InsertAsync(NpgsqlConnection connection, CatalogItem item, CancellationToken cancellationToken)
+    {
+        await using var insert = connection.CreateCommand();
+        insert.CommandText = """
+            insert into catalog_items
+            (id, name, country, country_code, category_code, category, position, kind, image_url, specs, description)
+            values
+            (@id, @name, @country, @country_code, @category_code, @category, @position, @kind, @image_url, cast(@specs as jsonb), @description)
+            on conflict (id) do nothing;
+            """;
+        insert.Parameters.AddWithValue("id", item.Id);
+        insert.Parameters.AddWithValue("name", item.Name);
+        insert.Parameters.AddWithValue("country", item.Country);
+        insert.Parameters.AddWithValue("country_code", item.CountryCode);
+        insert.Parameters.AddWithValue("category_code", item.CategoryCode);
+        insert.Parameters.AddWithValue("category", item.Category);
+        insert.Parameters.AddWithValue("position", item.Position);
+        insert.Parameters.AddWithValue("kind", item.Kind);
+        insert.Parameters.AddWithValue("image_url", item.ImageUrl);
+        insert.Parameters.AddWithValue("specs", JsonSerializer.Serialize(item.Specs, JsonOptions));
+        insert.Parameters.AddWithValue("description", item.Description);
+        await insert.ExecuteNonQueryAsync(cancellationToken);
     }
 
     private static CatalogItem ReadItem(NpgsqlDataReader reader)

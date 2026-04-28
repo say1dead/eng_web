@@ -1,0 +1,79 @@
+.language-switch button {
+  min-width: 52px;
+}
+
+.info-button {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.info-button:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.segmented button,
+.summary button {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.segmented button.active {
+  border-color: var(--steel);
+  background: var(--steel);
+  color: var(--active-ink);
+}
+
+.theme-switch {
+  justify-self: end;
+}
+
+.theme-switch button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  min-width: 38px;
+  padding: 0;
+}
+
+.theme-switch svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--close-border);
+  border-radius: 50%;
+  background: var(--close-bg);
+  color: #fff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
