@@ -1,4 +1,4 @@
-import { decades } from "../data/localization.js";
+import { decades } from "../data/localization.js?v=encoding-20260428";
 import { formatMeta, getAdoptionYear, getAdoptionYearNumber, getDecade } from "../catalog/catalog-model.js";
 import { setImageSource } from "../utils/images.js";
 

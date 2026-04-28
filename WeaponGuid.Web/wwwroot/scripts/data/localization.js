@@ -17,18 +17,18 @@ export const taxonomyByLanguage = {
   },
   ru: {
     countries: [
-      { code: 1, name: "РЎРЎРЎР " },
-      { code: 2, name: "Р“РµСЂРјР°РЅРёСЏ" },
-      { code: 3, name: "РЎРЁРђ" },
-      { code: 4, name: "Р’РµР»РёРєРѕР±СЂРёС‚Р°РЅРёСЏ" }
+      { code: 1, name: "СССР" },
+      { code: 2, name: "Германия" },
+      { code: 3, name: "США" },
+      { code: 4, name: "Великобритания" }
     ],
     categories: [
-      { code: "1", name: "РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРµ РѕСЂСѓР¶РёРµ", kind: "weapon" },
-      { code: "2", name: "Р’РёРЅС‚РѕРІРєРё", kind: "weapon" },
-      { code: "3", name: "РџСѓР»РµРјРµС‚С‹", kind: "weapon" },
-      { code: "4", name: "РўР°РЅРєРё", kind: "vehicle" },
-      { code: "5", name: "РЎР°РјРѕР»РµС‚С‹", kind: "aircraft" },
-      { code: "6", name: "Р—РµРЅРёС‚РЅС‹Рµ СѓСЃС‚Р°РЅРѕРІРєРё", kind: "vehicle" }
+      { code: "1", name: "Автоматическое оружие", kind: "weapon" },
+      { code: "2", name: "Винтовки", kind: "weapon" },
+      { code: "3", name: "Пулеметы", kind: "weapon" },
+      { code: "4", name: "Танки", kind: "vehicle" },
+      { code: "5", name: "Самолеты", kind: "aircraft" },
+      { code: "6", name: "Зенитные установки", kind: "vehicle" }
     ]
   }
 };
@@ -48,17 +48,17 @@ export const specLabelsByLanguage = {
     weapons: "Armament"
   },
   ru: {
-    year: "Р“РѕРґ РїСЂРёРЅСЏС‚РёСЏ",
-    caliber: "РљР°Р»РёР±СЂ",
-    fire_modes: "Р РµР¶РёРјС‹ СЃС‚СЂРµР»СЊР±С‹",
-    rate_of_fire: "РЎРєРѕСЂРѕСЃС‚СЂРµР»СЊРЅРѕСЃС‚СЊ",
-    range: "Р”Р°Р»СЊРЅРѕСЃС‚СЊ / РІР·Р»РµС‚",
-    weight: "РњР°СЃСЃР°",
-    armor: "Р‘СЂРѕРЅСЏ",
-    max_spead: "РЎРєРѕСЂРѕСЃС‚СЊ",
-    guns_and_spead: "Р’РѕРѕСЂСѓР¶РµРЅРёРµ",
-    max_stats: "Р›РµС‚РЅС‹Рµ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё",
-    weapons: "Р’РѕРѕСЂСѓР¶РµРЅРёРµ"
+    year: "Год принятия на вооружение",
+    caliber: "Калибр",
+    fire_modes: "Режимы стрельбы",
+    rate_of_fire: "Скорострельность",
+    range: "Дальность / взлет",
+    weight: "Масса",
+    armor: "Броня",
+    max_spead: "Скорость",
+    guns_and_spead: "Вооружение",
+    max_stats: "Летные характеристики",
+    weapons: "Вооружение"
   }
 };
 
@@ -96,34 +96,34 @@ export const uiByLanguage = {
   },
   ru: {
     htmlLang: "ru",
-    documentTitle: "РЎРїСЂР°РІРѕС‡РЅРёРє РІРѕРѕСЂСѓР¶РµРЅРёСЏ",
-    eyebrow: "20 РІРµРє",
-    heroTitle: "РЎРїСЂР°РІРѕС‡РЅРёРє РІРѕРѕСЂСѓР¶РµРЅРёСЏ",
-    searchLabel: "РџРѕРёСЃРє",
-    searchPlaceholder: "РќР°Р·РІР°РЅРёРµ, СЃС‚СЂР°РЅР°, РѕРїРёСЃР°РЅРёРµ",
-    countryTitle: "РЎС‚СЂР°РЅР°",
-    categoryTitle: "РљР°С‚РµРіРѕСЂРёСЏ",
-    itemCountLabel: "РѕР±СЉРµРєС‚РѕРІ РІ РєР°С‚Р°Р»РѕРіРµ",
-    resetFilters: "РЎР±СЂРѕСЃРёС‚СЊ С„РёР»СЊС‚СЂС‹",
-    creatorsButton: "РђРІС‚РѕСЂС‹",
-    creatorsEyebrow: "РРЅС„РѕСЂРјР°С†РёСЏ",
-    creatorsTitle: "РљРѕРјР°РЅРґР°",
+    documentTitle: "Справочник вооружения",
+    eyebrow: "20 век",
+    heroTitle: "Справочник вооружения",
+    searchLabel: "Поиск",
+    searchPlaceholder: "Название, страна, описание",
+    countryTitle: "Страна",
+    categoryTitle: "Категория",
+    itemCountLabel: "объектов в каталоге",
+    resetFilters: "Сбросить фильтры",
+    creatorsButton: "Авторы",
+    creatorsEyebrow: "Информация",
+    creatorsTitle: "Команда",
     creatorLines: [
       "<strong>Kochurov Sergey</strong> - backend.",
-      "<strong>Suslin Akim</strong> - С‚РµСЃС‚С‹ Рё СЃР±РѕСЂ РґР°РЅРЅС‹С….",
+      "<strong>Suslin Akim</strong> - тесты и сбор данных.",
       "<strong>Kuznetcov Kirill</strong> - team lead.",
       "<strong>Bodorin Gregory</strong> - frontend."
     ],
-    creatorsNote: "Р”Р°РЅРЅС‹Рµ СЃРѕР±СЂР°РЅС‹ РёР· РѕС‚РєСЂС‹С‚С‹С… РёСЃС‚РѕС‡РЅРёРєРѕРІ.",
-    all: "Р’СЃРµ",
-    emptyState: "РџРѕ СЌС‚РёРј С„РёР»СЊС‚СЂР°Рј РЅРёС‡РµРіРѕ РЅРµ РЅР°Р№РґРµРЅРѕ.",
-    noImage: "РќРµС‚ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ",
-    noChange: "Р‘РµР· РёР·РјРµРЅРµРЅРёР№",
-    noDescription: "РћРїРёСЃР°РЅРёРµ РїРѕРєР° РЅРµ РґРѕР±Р°РІР»РµРЅРѕ.",
-    imageNotFound: "РР·РѕР±СЂР°Р¶РµРЅРёРµ РЅРµ РЅР°Р№РґРµРЅРѕ",
-    timelineCategory: "РљР°С‚РµРіРѕСЂРёСЏ",
-    yearUnknown: "Р“РѕРґ РЅРµ СѓРєР°Р·Р°РЅ",
-    closeLabel: "Р—Р°РєСЂС‹С‚СЊ"
+    creatorsNote: "Данные собраны из открытых источников.",
+    all: "Все",
+    emptyState: "По этим фильтрам ничего не найдено.",
+    noImage: "Нет изображения",
+    noChange: "Без изменений",
+    noDescription: "Описание пока не добавлено.",
+    imageNotFound: "Изображение не найдено",
+    timelineCategory: "Категория",
+    yearUnknown: "Год не указан",
+    closeLabel: "Закрыть"
   }
 };
 

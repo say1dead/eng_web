@@ -2,7 +2,7 @@ import { filterItems } from "./catalog/catalog-filter.js";
 import { ensureCatalogLoaded } from "./catalog/catalog-repository.js";
 import { elements } from "./core/elements.js";
 import { state } from "./core/state.js";
-import { taxonomyByLanguage, uiByLanguage } from "./data/localization.js";
+import { taxonomyByLanguage, uiByLanguage } from "./data/localization.js?v=encoding-20260428";
 import { debounce } from "./utils/debounce.js";
 import { renderItems } from "./ui/catalog-view.js";
 import { bindDialogs, openItem } from "./ui/dialogs.js";

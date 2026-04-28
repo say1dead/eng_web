@@ -1,4 +1,4 @@
-import { specLabelsByLanguage, taxonomyByLanguage } from "../data/localization.js";
+import { specLabelsByLanguage, taxonomyByLanguage } from "../data/localization.js?v=encoding-20260428";
 import { assetUrl } from "../utils/assets.js";
 
 export function normalizeItem(raw, language) {
