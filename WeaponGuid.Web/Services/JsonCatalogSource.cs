@@ -3,7 +3,10 @@ using WeaponGuid.Web.Models;
 
 namespace WeaponGuid.Web.Services;
 
-public sealed class JsonCatalogSource(IWebHostEnvironment environment, ImageUrlBuilder imageUrlBuilder)
+public sealed class JsonCatalogSource(
+    IWebHostEnvironment environment,
+    IConfiguration configuration,
+    ImageUrlBuilder imageUrlBuilder)
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -30,7 +33,7 @@ public sealed class JsonCatalogSource(IWebHostEnvironment environment, ImageUrlB
     private async Task LoadFileAsync(List<CatalogItem> output, string fileName, CancellationToken cancellationToken)
     {
         var path = ResolveDataFile(fileName);
-        await using var stream = File.OpenRead(path);
+        await using var stream = System.IO.File.OpenRead(path);
         var rawItems = await JsonSerializer.DeserializeAsync<RawCatalogItem[]>(stream, JsonOptions, cancellationToken)
                        ?? [];
 
@@ -46,15 +49,21 @@ public sealed class JsonCatalogSource(IWebHostEnvironment environment, ImageUrlB
 
     private string ResolveDataFile(string fileName)
     {
+        var language = configuration["Catalog:Language"];
+        if (language is not "en" and not "ru")
+        {
+            language = "ru";
+        }
+
         var candidates = new[]
         {
-            System.IO.Path.Combine(environment.ContentRootPath, "Data", fileName),
-            System.IO.Path.GetFullPath(System.IO.Path.Combine(environment.ContentRootPath, "..", fileName)),
-            System.IO.Path.Combine(AppContext.BaseDirectory, "Data", fileName)
+            System.IO.Path.Combine(environment.WebRootPath, "data", language, fileName),
+            System.IO.Path.Combine(environment.ContentRootPath, "wwwroot", "data", language, fileName),
+            System.IO.Path.Combine(AppContext.BaseDirectory, "wwwroot", "data", language, fileName)
         };
 
-        return candidates.FirstOrDefault(File.Exists)
-               ?? throw new FileNotFoundException($"Не найден файл данных {fileName}.", fileName);
+        return candidates.FirstOrDefault(System.IO.File.Exists)
+               ?? throw new FileNotFoundException($"Missing data file wwwroot/data/{language}/{fileName}.", fileName);
     }
 
     private CatalogItem? Convert(RawCatalogItem raw)

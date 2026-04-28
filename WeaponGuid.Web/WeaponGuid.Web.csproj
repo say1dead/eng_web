@@ -13,10 +13,4 @@
     <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.7" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="..\fly_auto.json" Link="Data\fly_auto.json" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="..\weapons.json" Link="Data\weapons.json" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="..\wheel_auto.json" Link="Data\wheel_auto.json" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
 </Project>
