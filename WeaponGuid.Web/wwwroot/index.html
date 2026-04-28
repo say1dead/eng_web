@@ -4,7 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weapons Guid</title>
-  <link rel="stylesheet" href="styles.css?v=lang-20260427">
+  <script>
+    (() => {
+      try {
+        const theme = window.localStorage.getItem("weapon-guid-theme");
+        document.documentElement.dataset.theme = theme === "dark" ? "dark" : "light";
+      } catch {
+        document.documentElement.dataset.theme = "light";
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="styles.css?v=theme-20260428">
 </head>
 <body>
   <header class="app-header">
@@ -19,10 +29,32 @@
       <p id="heroEyebrow" class="eyebrow">20th century</p>
       <h1 id="heroTitle">Weapons Reference</h1>
     </div>
-    <label class="search">
-      <span id="searchLabel">Search</span>
-      <input id="searchInput" type="search" placeholder="Name, country, description">
-    </label>
+    <div class="search-panel">
+      <div id="themeSwitch" class="segmented theme-switch" aria-label="Theme">
+        <button type="button" data-theme-option="light" aria-label="Light theme">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="m4.93 4.93 1.41 1.41"></path>
+            <path d="m17.66 17.66 1.41 1.41"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="m6.34 17.66-1.41 1.41"></path>
+            <path d="m19.07 4.93-1.41 1.41"></path>
+          </svg>
+        </button>
+        <button type="button" data-theme-option="dark" aria-label="Dark theme">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.99 14.3A8.5 8.5 0 0 1 9.7 3.01a7 7 0 1 0 11.29 11.29Z"></path>
+          </svg>
+        </button>
+      </div>
+      <label class="search">
+        <span id="searchLabel">Search</span>
+        <input id="searchInput" type="search" placeholder="Name, country, description">
+      </label>
+    </div>
   </header>
 
   <main>
@@ -88,6 +120,6 @@
     </article>
   </template>
 
-  <script src="app.js?v=lang-20260427" defer></script>
+  <script src="app.js?v=theme-20260428" defer></script>
 </body>
 </html>

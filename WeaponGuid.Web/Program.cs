@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
+using WeaponGuid.Web.GraphQL;
 using WeaponGuid.Web.Models;
 using WeaponGuid.Web.Services;
 
@@ -12,6 +13,11 @@ builder.Logging.AddConsole();
 
 builder.Services.AddSingleton<ImageUrlBuilder>();
 builder.Services.AddSingleton<JsonCatalogSource>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services
+    .AddGraphQLServer()
+    .AddQueryType<CatalogQuery>();
 
 var postgresConnection = builder.Configuration.GetConnectionString("Postgres");
 if (string.IsNullOrWhiteSpace(postgresConnection))
@@ -36,11 +42,17 @@ await catalog.InitializeAsync();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseCors();
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "WeaponGuid API v1");
+});
 
 var localImagesPath = builder.Configuration["S3:LocalImagesPath"];
 if (!string.IsNullOrWhiteSpace(localImagesPath))
 {
-    var absoluteImagesPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, localImagesPath));
+        var absoluteImagesPath = System.IO.Path.GetFullPath(
+            System.IO.Path.Combine(app.Environment.ContentRootPath, localImagesPath));
     if (Directory.Exists(absoluteImagesPath))
     {
         app.UseStaticFiles(new StaticFileOptions
@@ -56,7 +68,8 @@ if (!string.IsNullOrWhiteSpace(localImagesPath))
 }
 
 app.MapGet("/api/taxonomy", () =>
-    Results.Ok(new TaxonomyDto(CatalogMetadata.Countries, CatalogMetadata.Categories)));
+    Results.Ok(new TaxonomyDto(CatalogMetadata.Countries, CatalogMetadata.Categories)))
+    .WithName("GetTaxonomy");
 
 app.MapGet("/api/items", async (
     string? country,
@@ -67,19 +80,24 @@ app.MapGet("/api/items", async (
 {
     var items = await store.ListAsync(new CatalogFilters(country, category, q), cancellationToken);
     return Results.Ok(items);
-});
+})
+    .WithName("GetItems");
 
 app.MapGet("/api/items/{id}", async (string id, ICatalogStore store, CancellationToken cancellationToken) =>
 {
     var item = await store.GetAsync(id, cancellationToken);
     return item is null ? Results.NotFound() : Results.Ok(item);
-});
+})
+    .WithName("GetItemById");
 
 app.MapGet("/api/health", () => Results.Ok(new
 {
     status = "ok",
     storage = string.IsNullOrWhiteSpace(postgresConnection) ? "json" : "postgres"
-}));
+}))
+    .WithName("GetHealth");
+
+app.MapGraphQL("/graphql");
 
 app.MapFallbackToFile("index.html");
 

@@ -2,6 +2,8 @@
   color-scheme: light;
   --paper: #f4f1ea;
   --panel: #ffffff;
+  --header: #f9f7f1;
+  --soft-panel: #faf8f3;
   --ink: #202326;
   --muted: #667078;
   --line: #d8d3c7;
@@ -10,7 +12,55 @@
   --blue: #2f5f86;
   --steel: #343a40;
   --gold: #c3954a;
+  --active-ink: #ffffff;
+  --description: #343a40;
+  --empty-bg: rgb(255 255 255 / 45%);
+  --focus-ring: rgb(47 95 134 / 15%);
+  --timeline-item-border: rgb(47 95 134 / 20%);
+  --timeline-item-bg: #f5fbff;
+  --timeline-item-hover: #eaf5fc;
+  --carryover-border: #b7b0a3;
+  --carryover-bg: #fffaf0;
+  --carryover-hover: #fff4d8;
+  --image-bg: linear-gradient(135deg, #d8d3c7, #aab2af);
+  --image-missing: #4f555a;
+  --dialog-image-bg: #111315;
+  --close-border: rgb(255 255 255 / 60%);
+  --close-bg: rgb(32 35 38 / 82%);
+  --dialog-backdrop: rgb(20 22 25 / 55%);
   font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #050607;
+  --panel: #0d0f12;
+  --header: #080a0c;
+  --soft-panel: #0a0c0f;
+  --ink: #f3f4f6;
+  --muted: #a5adba;
+  --line: #272c33;
+  --olive: #8ea27d;
+  --red: #d06f64;
+  --blue: #80b9e7;
+  --steel: #e5e7eb;
+  --gold: #d9ab5f;
+  --active-ink: #050607;
+  --description: #d7dce2;
+  --empty-bg: rgb(255 255 255 / 5%);
+  --focus-ring: rgb(128 185 231 / 22%);
+  --timeline-item-border: rgb(128 185 231 / 28%);
+  --timeline-item-bg: #0c1720;
+  --timeline-item-hover: #102235;
+  --carryover-border: #5e6470;
+  --carryover-bg: #12100a;
+  --carryover-hover: #1d1708;
+  --image-bg: linear-gradient(135deg, #191d22, #333b43);
+  --image-missing: #c4cad2;
+  --dialog-image-bg: #030405;
+  --close-border: rgb(255 255 255 / 28%);
+  --close-bg: rgb(3 4 5 / 86%);
+  --dialog-backdrop: rgb(0 0 0 / 72%);
 }
 
 * {
@@ -35,7 +85,7 @@ input {
   align-items: end;
   gap: 24px;
   padding: 32px clamp(16px, 4vw, 56px) 24px;
-  background: #f9f7f1;
+  background: var(--header);
   border-bottom: 1px solid var(--line);
 }
 
@@ -94,11 +144,39 @@ main {
   padding: 22px clamp(16px, 4vw, 56px) 48px;
 }
 
+.search-panel {
+  display: grid;
+  gap: 8px;
+  width: min(360px, 100%);
+  justify-self: end;
+}
+
+.theme-switch {
+  justify-self: end;
+}
+
+.theme-switch button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  min-width: 38px;
+  padding: 0;
+}
+
+.theme-switch svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
 .search {
   display: grid;
   gap: 6px;
-  min-width: min(360px, 100%);
-  justify-self: end;
+  width: 100%;
   color: var(--muted);
   font-size: 13px;
   font-weight: 700;
@@ -116,7 +194,7 @@ main {
 
 .search input:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgb(47 95 134 / 15%);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .toolbar {
@@ -146,7 +224,7 @@ main {
 .segmented button.active {
   border-color: var(--steel);
   background: var(--steel);
-  color: #fff;
+  color: var(--active-ink);
 }
 
 .summary {
@@ -210,7 +288,7 @@ main {
   z-index: 2;
   width: 160px;
   min-width: 208px;
-  background: #f9f7f1;
+  background: var(--header);
   color: var(--steel);
 }
 
@@ -218,7 +296,7 @@ main {
   position: sticky;
   top: 0;
   z-index: 3;
-  background: #f9f7f1;
+  background: var(--header);
   color: var(--muted);
   font-size: 12px;
 }
@@ -238,7 +316,7 @@ main {
 }
 
 .timeline-empty {
-  background: #faf8f3;
+  background: var(--soft-panel);
 }
 
 .timeline-item {
@@ -250,10 +328,10 @@ main {
   width: 100%;
   min-height: 84px;
   margin: 0 0 8px;
-  border: 1px solid rgb(47 95 134 / 20%);
+  border: 1px solid var(--timeline-item-border);
   border-left: 4px solid var(--blue);
   border-radius: 6px;
-  background: #f5fbff;
+  background: var(--timeline-item-bg);
   color: var(--ink);
   padding: 8px;
   text-align: left;
@@ -266,7 +344,7 @@ main {
 
 .timeline-item:hover {
   border-color: var(--blue);
-  background: #eaf5fc;
+  background: var(--timeline-item-hover);
 }
 
 .timeline-thumb {
@@ -277,7 +355,7 @@ main {
   height: 62px;
   overflow: hidden;
   border-radius: 5px;
-  background: linear-gradient(135deg, #d8d3c7, #aab2af);
+  background: var(--image-bg);
 }
 
 .timeline-thumb img {
@@ -293,7 +371,7 @@ main {
   inset: 0;
   display: grid;
   place-items: center;
-  color: #4f555a;
+  color: var(--image-missing);
   font-size: 12px;
   font-weight: 700;
   text-align: center;
@@ -317,9 +395,9 @@ main {
   gap: 3px;
   width: 100%;
   min-height: 74px;
-  border: 1px dashed #b7b0a3;
+  border: 1px dashed var(--carryover-border);
   border-radius: 6px;
-  background: #fffaf0;
+  background: var(--carryover-bg);
   color: var(--muted);
   padding: 9px;
   text-align: center;
@@ -342,7 +420,7 @@ main {
 
 .timeline-carryover:hover {
   border-color: var(--gold);
-  background: #fff4d8;
+  background: var(--carryover-hover);
 }
 
 .catalog-card {
@@ -368,7 +446,7 @@ main {
 .image-wrap {
   position: relative;
   aspect-ratio: 16 / 10;
-  background: linear-gradient(135deg, #d8d3c7, #aab2af);
+  background: var(--image-bg);
   overflow: hidden;
 }
 
@@ -385,7 +463,7 @@ main {
   inset: 0;
   display: grid;
   place-items: center;
-  color: #4f555a;
+  color: var(--image-missing);
   font-size: 13px;
   font-weight: 700;
 }
@@ -413,7 +491,7 @@ main {
 }
 
 .item-dialog::backdrop {
-  background: rgb(20 22 25 / 55%);
+  background: var(--dialog-backdrop);
 }
 
 .info-dialog {
@@ -425,7 +503,7 @@ main {
 }
 
 .info-dialog::backdrop {
-  background: rgb(20 22 25 / 55%);
+  background: var(--dialog-backdrop);
 }
 
 .info-dialog-content {
@@ -458,7 +536,7 @@ main {
   height: 100%;
   min-height: min(552px, calc(100vh - 18px));
   object-fit: contain;
-  background: #111315;
+  background: var(--dialog-image-bg);
 }
 
 .dialog-content {
@@ -498,7 +576,7 @@ main {
 
 #dialogDescription {
   margin: 0;
-  color: #343a40;
+  color: var(--description);
   line-height: 1.55;
   white-space: pre-line;
 }
@@ -510,9 +588,9 @@ main {
   z-index: 2;
   width: 36px;
   height: 36px;
-  border: 1px solid rgb(255 255 255 / 60%);
+  border: 1px solid var(--close-border);
   border-radius: 50%;
-  background: rgb(32 35 38 / 82%);
+  background: var(--close-bg);
   color: #fff;
   font-size: 24px;
   line-height: 1;
@@ -524,7 +602,7 @@ main {
   padding: 36px;
   border: 1px dashed var(--line);
   border-radius: 8px;
-  background: rgb(255 255 255 / 45%);
+  background: var(--empty-bg);
   color: var(--muted);
   text-align: center;
 }
@@ -541,7 +619,7 @@ main {
   }
 
   .header-info,
-  .search {
+  .search-panel {
     justify-self: stretch;
   }
 
@@ -554,8 +632,9 @@ main {
     order: 1;
   }
 
-  .search {
+  .search-panel {
     order: 3;
+    width: 100%;
   }
 
   .toolbar {

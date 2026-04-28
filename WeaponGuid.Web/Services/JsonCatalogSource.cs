@@ -48,9 +48,9 @@ public sealed class JsonCatalogSource(IWebHostEnvironment environment, ImageUrlB
     {
         var candidates = new[]
         {
-            Path.Combine(environment.ContentRootPath, "Data", fileName),
-            Path.GetFullPath(Path.Combine(environment.ContentRootPath, "..", fileName)),
-            Path.Combine(AppContext.BaseDirectory, "Data", fileName)
+            System.IO.Path.Combine(environment.ContentRootPath, "Data", fileName),
+            System.IO.Path.GetFullPath(System.IO.Path.Combine(environment.ContentRootPath, "..", fileName)),
+            System.IO.Path.Combine(AppContext.BaseDirectory, "Data", fileName)
         };
 
         return candidates.FirstOrDefault(File.Exists)

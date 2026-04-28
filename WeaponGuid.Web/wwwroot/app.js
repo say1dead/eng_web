@@ -136,6 +136,7 @@ const assetBaseUrl = new URL(".", document.currentScript?.src || window.location
 
 const state = {
   language: getInitialLanguage(),
+  theme: getInitialTheme(),
   country: "",
   category: "",
   query: "",
@@ -146,6 +147,7 @@ const state = {
 
 const elements = {
   languageSwitch: document.querySelector("#languageSwitch"),
+  themeSwitch: document.querySelector("#themeSwitch"),
   creatorsButton: document.querySelector("#creatorsButton"),
   heroEyebrow: document.querySelector("#heroEyebrow"),
   heroTitle: document.querySelector("#heroTitle"),
@@ -182,7 +184,9 @@ init();
 
 async function init() {
   bindEvents();
+  applyTheme();
   renderLanguageSwitch();
+  renderThemeSwitch();
   await ensureCatalogLoaded(state.language);
   applyLocale();
   loadItems();
@@ -248,6 +252,50 @@ function renderLanguageSwitch() {
   }
 }
 
+function setTheme(theme) {
+  if (theme === state.theme) {
+    return;
+  }
+
+  state.theme = theme;
+  window.localStorage.setItem("weapon-guid-theme", theme);
+  applyTheme();
+  renderThemeSwitch();
+}
+
+function applyTheme() {
+  document.documentElement.dataset.theme = state.theme;
+}
+
+function renderThemeSwitch() {
+  const labelsByLanguage = {
+    en: {
+      light: "Light theme",
+      dark: "Dark theme"
+    },
+    ru: {
+      light: "\u0421\u0432\u0435\u0442\u043b\u0430\u044f \u0442\u0435\u043c\u0430",
+      dark: "\u0422\u0435\u043c\u043d\u0430\u044f \u0442\u0435\u043c\u0430"
+    }
+  };
+  const labels = labelsByLanguage[state.language] || labelsByLanguage.en;
+  const buttons = elements.themeSwitch.querySelectorAll("button[data-theme-option]");
+
+  for (const button of buttons) {
+    const theme = button.dataset.themeOption;
+    const label = labels[theme] || theme;
+    button.setAttribute("aria-label", label);
+    button.title = label;
+    button.classList.toggle("active", state.theme === theme);
+    if (button.dataset.bound === "true") {
+      continue;
+    }
+
+    button.dataset.bound = "true";
+    button.addEventListener("click", () => setTheme(theme));
+  }
+}
+
 async function ensureCatalogLoaded(language) {
   if (state.catalogs[language]) {
     return state.catalogs[language];
@@ -294,6 +342,7 @@ function applyLocale() {
   elements.creatorsNote.textContent = ui.creatorsNote;
   elements.closeDialog.setAttribute("aria-label", ui.closeLabel);
   elements.closeCreatorsDialog.setAttribute("aria-label", ui.closeLabel);
+  renderThemeSwitch();
   renderFilters();
 }
 
@@ -677,6 +726,11 @@ function getInitialLanguage() {
   }
 
   return navigator.language.toLowerCase().startsWith("ru") ? "ru" : "en";
+}
+
+function getInitialTheme() {
+  const savedTheme = window.localStorage.getItem("weapon-guid-theme");
+  return savedTheme === "dark" ? "dark" : "light";
 }
 
 function getTaxonomy() {
