@@ -2,22 +2,29 @@
   display: grid;
   gap: 6px;
   width: 100%;
-  color: var(--muted);
+  color: rgb(255 255 255 / 74%);
   font-size: 13px;
   font-weight: 700;
 }
 
 .search input {
   width: 100%;
-  border: 1px solid var(--line);
+  min-height: 48px;
+  border: 1px solid rgb(255 255 255 / 20%);
   border-radius: 8px;
-  background: var(--panel);
-  color: var(--ink);
-  padding: 12px 14px;
+  background: rgb(255 255 255 / 92%);
+  color: #16211d;
+  padding: 12px 15px;
   outline: none;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 70%);
 }
 
 .search input:focus {
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px var(--focus-ring);
+  border-color: rgb(255 255 255 / 68%);
+  box-shadow: 0 0 0 4px rgb(212 91 69 / 26%);
+}
+
+html[data-theme="dark"] .search input {
+  background: rgb(12 18 17 / 88%);
+  color: var(--ink);
 }

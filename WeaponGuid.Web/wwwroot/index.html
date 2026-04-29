@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Weapons Guid</title>
+  <title>Weapons Guide</title>
   <script>
     (() => {
       try {
@@ -14,7 +14,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=theme-20260428">
+  <link rel="stylesheet" href="styles.css?v=ads-20260429">
 </head>
 <body>
   <header class="app-header">
@@ -77,7 +77,15 @@
       <button id="resetFilters" type="button">Reset filters</button>
     </section>
 
-    <section id="catalogGrid" class="catalog-grid" aria-live="polite"></section>
+    <section class="catalog-shell" aria-label="Catalog">
+      <aside class="ad-banner" aria-label="Advertisement">
+        <span id="adBannerLeft">Your ad could be here</span>
+      </aside>
+      <section id="catalogGrid" class="catalog-grid" aria-live="polite"></section>
+      <aside class="ad-banner" aria-label="Advertisement">
+        <span id="adBannerRight">Your ad could be here</span>
+      </aside>
+    </section>
   </main>
 
   <dialog id="itemDialog" class="item-dialog">
@@ -120,6 +128,6 @@
     </article>
   </template>
 
-  <script src="scripts/main.js?v=encoding-20260428" type="module"></script>
+  <script src="scripts/main.js?v=ads-20260429" type="module"></script>
 </body>
 </html>

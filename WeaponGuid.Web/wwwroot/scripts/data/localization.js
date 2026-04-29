@@ -65,7 +65,7 @@ export const specLabelsByLanguage = {
 export const uiByLanguage = {
   en: {
     htmlLang: "en",
-    documentTitle: "Weapons Guid",
+    documentTitle: "Weapons Guide",
     eyebrow: "20th century",
     heroTitle: "Weapons Reference",
     searchLabel: "Search",
@@ -74,6 +74,7 @@ export const uiByLanguage = {
     categoryTitle: "Category",
     itemCountLabel: "items in the catalog",
     resetFilters: "Reset filters",
+    adBanner: "Your ad could be here",
     creatorsButton: "Creators",
     creatorsEyebrow: "Information",
     creatorsTitle: "Info",
@@ -105,6 +106,7 @@ export const uiByLanguage = {
     categoryTitle: "Категория",
     itemCountLabel: "объектов в каталоге",
     resetFilters: "Сбросить фильтры",
+    adBanner: "Здесь могла быть ваша реклама",
     creatorsButton: "Авторы",
     creatorsEyebrow: "Информация",
     creatorsTitle: "Команда",

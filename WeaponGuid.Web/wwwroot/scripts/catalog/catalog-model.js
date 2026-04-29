@@ -1,5 +1,4 @@
 import { specLabelsByLanguage, taxonomyByLanguage } from "../data/localization.js?v=encoding-20260428";
-import { assetUrl } from "../utils/assets.js";
 
 export function normalizeItem(raw, language) {
   const id = String(raw.id);
@@ -31,7 +30,7 @@ export function normalizeItem(raw, language) {
     category: category.name,
     position: Number(id.slice(2)) || 0,
     kind: category.kind,
-    imageUrl: assetUrl(`images/${id}.jpg`),
+    imageUrl: `/images/${id}.jpg`,
     specs,
     description: String(raw.description || "")
   };

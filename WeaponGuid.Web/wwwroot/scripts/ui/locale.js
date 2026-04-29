@@ -11,6 +11,8 @@ export function applyLocale(state, elements, ui, renderFilters) {
   elements.categoryTitle.textContent = ui.categoryTitle;
   elements.countLabel.textContent = ui.itemCountLabel;
   elements.reset.textContent = ui.resetFilters;
+  elements.adBannerLeft.textContent = ui.adBanner;
+  elements.adBannerRight.textContent = ui.adBanner;
   elements.creatorsButton.textContent = ui.creatorsButton;
   elements.creatorsEyebrow.textContent = ui.creatorsEyebrow;
   elements.creatorsTitle.textContent = ui.creatorsTitle;

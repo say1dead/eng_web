@@ -28,12 +28,7 @@ public sealed class JsonCatalogStore(JsonCatalogSource source) : ICatalogStore
 
         if (!string.IsNullOrWhiteSpace(filters.Query))
         {
-            var search = filters.Query.Trim();
-            query = query.Where(item =>
-                item.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                item.Country.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                item.Category.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                item.Description.Contains(search, StringComparison.OrdinalIgnoreCase));
+            query = query.Where(item => SearchText.Matches(item, filters.Query));
         }
 
         return query.ToArray();

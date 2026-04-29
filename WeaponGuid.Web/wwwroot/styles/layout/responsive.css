@@ -7,6 +7,7 @@
   .app-header {
     grid-template-columns: 1fr;
     align-items: stretch;
+    min-height: 500px;
   }
 
   .header-info,
@@ -21,6 +22,7 @@
 
   .header-title {
     order: 1;
+    transform: translateY(-12px);
   }
 
   .search-panel {
@@ -30,6 +32,7 @@
 
   .toolbar {
     grid-template-columns: 1fr;
+    margin-top: -42px;
   }
 
   .dialog-layout {
@@ -44,5 +47,60 @@
 
   .dialog-content dl {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1180px) {
+  .catalog-shell {
+    grid-template-columns: 1fr;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .ad-banner {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  main {
+    padding-inline: 12px;
+  }
+
+  .app-header {
+    padding-inline: 12px;
+  }
+
+  .toolbar,
+  .search-panel {
+    padding: 12px;
+  }
+
+  .segmented button,
+  .summary button {
+    min-height: 36px;
+    padding: 7px 10px;
+  }
+
+  .catalog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline-table th,
+  .timeline-table td {
+    padding: 6px;
+  }
+
+  .timeline-table th:first-child {
+    width: 96px;
+    min-width: 96px;
+  }
+
+  .timeline-item {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline-thumb {
+    display: none;
   }
 }

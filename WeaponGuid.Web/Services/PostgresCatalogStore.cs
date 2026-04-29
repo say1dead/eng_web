@@ -43,12 +43,6 @@ public sealed class PostgresCatalogStore(NpgsqlDataSource dataSource, JsonCatalo
             command.Parameters.AddWithValue("category_code", filters.Category);
         }
 
-        if (!string.IsNullOrWhiteSpace(filters.Query))
-        {
-            conditions.Add("(name ilike @query or description ilike @query or country ilike @query or category ilike @query)");
-            command.Parameters.AddWithValue("query", $"%{filters.Query.Trim()}%");
-        }
-
         command.CommandText = $"""
             select id, name, country, country_code, category_code, category, position, kind, image_url, specs::text, description
             from catalog_items
@@ -61,6 +55,11 @@ public sealed class PostgresCatalogStore(NpgsqlDataSource dataSource, JsonCatalo
         while (await reader.ReadAsync(cancellationToken))
         {
             result.Add(ReadItem(reader));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filters.Query))
+        {
+            result = result.Where(item => SearchText.Matches(item, filters.Query)).ToList();
         }
 
         return result;

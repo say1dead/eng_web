@@ -4,17 +4,19 @@
 
 .info-button {
   min-height: 38px;
-  border: 1px solid var(--line);
+  border: 1px solid rgb(255 255 255 / 22%);
   border-radius: 8px;
-  background: var(--panel);
-  color: var(--ink);
+  background: rgb(255 255 255 / 12%);
+  color: #fff;
   padding: 8px 12px;
   cursor: pointer;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 18%);
+  backdrop-filter: blur(16px);
 }
 
 .info-button:hover {
-  border-color: var(--blue);
-  color: var(--blue);
+  border-color: rgb(255 255 255 / 48%);
+  background: rgb(255 255 255 / 20%);
 }
 
 .segmented {
@@ -32,12 +34,28 @@
   color: var(--ink);
   padding: 8px 12px;
   cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.app-header .segmented button {
+  border-color: rgb(255 255 255 / 20%);
+  background: rgb(255 255 255 / 11%);
+  color: #fff;
+  backdrop-filter: blur(16px);
+}
+
+.segmented button:hover,
+.summary button:hover {
+  border-color: var(--blue);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
 }
 
 .segmented button.active {
-  border-color: var(--steel);
-  background: var(--steel);
+  border-color: var(--accent);
+  background: linear-gradient(135deg, var(--accent), var(--gold));
   color: var(--active-ink);
+  box-shadow: 0 12px 28px rgb(190 91 69 / 26%);
 }
 
 .theme-switch {
@@ -76,4 +94,10 @@
   font-size: 24px;
   line-height: 1;
   cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.close-button:hover {
+  transform: rotate(90deg);
+  background: var(--accent);
 }

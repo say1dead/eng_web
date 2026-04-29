@@ -5,6 +5,9 @@
   border-radius: 8px;
   padding: 0;
   color: var(--ink);
+  background: var(--panel);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
 }
 
 .item-dialog::backdrop {
@@ -17,6 +20,9 @@
   border-radius: 8px;
   padding: 0;
   color: var(--ink);
+  background: var(--panel);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
 }
 
 .info-dialog::backdrop {
@@ -59,13 +65,14 @@
 .dialog-content {
   overflow: auto;
   max-height: calc(100vh - 18px);
-  padding: 29px;
+  padding: 34px;
 }
 
 .dialog-content h2 {
   margin: 0 0 18px;
-  font-size: 41px;
+  font-size: clamp(32px, 4vw, 48px);
   line-height: 1.05;
+  text-wrap: balance;
 }
 
 .dialog-content dl {
@@ -73,6 +80,10 @@
   grid-template-columns: minmax(128px, 188px) minmax(0, 1fr);
   gap: 12px 17px;
   margin: 0 0 24px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft-panel);
 }
 
 .dialog-content dt {

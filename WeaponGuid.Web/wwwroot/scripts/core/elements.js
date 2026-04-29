@@ -13,6 +13,8 @@ export const elements = {
   count: document.querySelector("#itemCount"),
   countLabel: document.querySelector("#itemCountLabel"),
   reset: document.querySelector("#resetFilters"),
+  adBannerLeft: document.querySelector("#adBannerLeft"),
+  adBannerRight: document.querySelector("#adBannerRight"),
   grid: document.querySelector("#catalogGrid"),
   template: document.querySelector("#cardTemplate"),
   dialog: document.querySelector("#itemDialog"),
